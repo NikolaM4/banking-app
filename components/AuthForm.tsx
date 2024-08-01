@@ -12,6 +12,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import CustomInput from './CustomInput'
 import { authFormSchema } from '@/lib/utils'
+import { Loader2 } from 'lucide-react'
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -19,6 +20,7 @@ const formSchema = z.object({
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof authFormSchema>>({
     resolver: zodResolver(authFormSchema),
@@ -29,7 +31,9 @@ const AuthForm = ({ type }: { type: string }) => {
   })
 
   function onSubmit(values: z.infer<typeof authFormSchema>) {
+    setIsLoading(true)
     console.log(values)
+    setIsLoading(false)
   }
 
   return (
@@ -56,7 +60,18 @@ const AuthForm = ({ type }: { type: string }) => {
               <CustomInput control={form.control} name="email" label="Email" placeholder="Enter your email" />
               <CustomInput control={form.control} name="password" label="Password" placeholder="Enter your password" />
 
-              <Button type="submit">Submit</Button>
+              <Button type="submit" className="form-btn">
+                {isLoading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    &nbsp; Loading...
+                  </>
+                ) : type === 'sign-in' ? (
+                  'Sign In'
+                ) : (
+                  'Sign Up'
+                )}
+              </Button>
             </form>
           </Form>
         </>
